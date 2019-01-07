@@ -1,6 +1,12 @@
-# lightline-ale
+# lightline-ycm
 
-This plugin provides [ALE](https://github.com/w0rp/ale) indicator for the [lightline](https://github.com/itchyny/lightline.vim) vim plugin.
+This plugin provides [YCM] indicator for the [lightline] vim plugin with
+a similar look and API used by [lightline-ale]. See [Notes](#notes) for their
+differences.
+
+[YCM]: https://github.com/Valloric/YouCompleteMe
+[lightline]: https://github.com/itchyny/lightline.vim
+[lightline-ale]: https://github.com/maximbaz/lightline-ale
 
 ![screenshot](./screenshot.png)
 
@@ -9,6 +15,7 @@ This plugin provides [ALE](https://github.com/w0rp/ale) indicator for the [light
 * [Installation](#installation)
 * [Integration](#integration)
 * [Configuration](#configuration)
+* [Notes](#notes)
 * [License](#license)
 
 ## Installation
@@ -16,9 +23,9 @@ This plugin provides [ALE](https://github.com/w0rp/ale) indicator for the [light
 Install using a plugin manager of your choice, for example:
 
 ```viml
-call dein#add('w0rp/ale')                 " Dependency: linter
+call dein#add('Valloric/YouCompleteMe')   " Dependency: linter
 call dein#add('itchyny/lightline.vim')    " Dependency: status line
-call dein#add('maximbaz/lightline-ale')
+call dein#add('maximbaz/lightline-ycm')
 ```
 
 ## Integration
@@ -29,10 +36,10 @@ call dein#add('maximbaz/lightline-ale')
 let g:lightline = {}
 
 let g:lightline.component_expand = {
-      \  'linter_checking': 'lightline#ale#checking',
-      \  'linter_warnings': 'lightline#ale#warnings',
-      \  'linter_errors': 'lightline#ale#errors',
-      \  'linter_ok': 'lightline#ale#ok',
+      \  'linter_checking': 'lightline#ycm#checking',
+      \  'linter_warnings': 'lightline#ycm#warnings',
+      \  'linter_errors': 'lightline#ycm#errors',
+      \  'linter_ok': 'lightline#ycm#ok',
       \ }
 ```
 
@@ -55,21 +62,24 @@ let g:lightline.active = { 'right': [[ 'linter_checking', 'linter_errors', 'lint
 
 ## Configuration
 
-##### `g:lightline#ale#indicator_checking`
+##### `g:lightline#ycm#indicator_checking`
 
-The indicator to use when ALE is in progress. Default is `Linting...`.
+**This message is currently unused in lightline-ycm. See [Notes](#notes) for details.**
 
-##### `g:lightline#ale#indicator_warnings`
+##### `g:lightline#ycm#indicator_warnings`
 
-The indicator to use when there are warnings. Default is `W:`.
+The indicator to use when there are warnings. Default is the value of
+`g:lightline#ale#indicator_warnings` if set, otherwise `W:`.
 
-##### `g:lightline#ale#indicator_errors`
+##### `g:lightline#ycm#indicator_errors`
 
-The indicator to use when there are errors. Default is `E:`.
+The indicator to use when there are errors. Default is the value of
+`g:lightline#ale#indicator_errors` if set, otherwise `E:`.
 
-##### `g:lightline#ale#indicator_ok`
+##### `g:lightline#ycm#indicator_ok`
 
-The indicator to use when there are no warnings or errors. Default is `OK`.
+The indicator to use when there are no warnings or errors. Default is the value
+of `g:lightline#ale#indicator_errors` if set, otherwise `OK`.
 
 ### Using icons as indicators
 
@@ -92,11 +102,24 @@ See the code points here:
 Here's the configuration snippet used in the screenshot:
 
 ```viml
-let g:lightline#ale#indicator_checking = "\uf110"
-let g:lightline#ale#indicator_warnings = "\uf071"
-let g:lightline#ale#indicator_errors = "\uf05e"
-let g:lightline#ale#indicator_ok = "\uf00c"
+let g:lightline#ycm#indicator_checking = "\uf110"
+let g:lightline#ycm#indicator_warnings = "\uf071"
+let g:lightline#ycm#indicator_errors = "\uf05e"
+let g:lightline#ycm#indicator_ok = "\uf00c"
 ```
+
+## Notes
+
+- **`lightline#ycm#checking` does not work.** It is provided just for keeping
+compatibility with lightline-ale API. YCM does not support any linter events in
+its API as of today. It returns just an empty string currently.
+
+- Status line update is checked on `CursorMove` and `CursorHold` events for
+the same reason. The update will be called only if the number of errors or
+warnings have changed since the last call.
+
+- Feel free to submit PRs in case you come up with some ideas about removing
+this limitations.
 
 ## License
 
